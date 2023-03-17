@@ -15,4 +15,4 @@ const ThingSchema = mongoose.Schema({
   usersDisliked: { type: [String], default: [] },
 });
 
-module.exports = mongoose.model('Sauce', ThingSchema);
+module.exports = mongoose.model('sauce', ThingSchema);
