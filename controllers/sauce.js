@@ -25,7 +25,7 @@ exports.modifySauce = (req, res, next) => {
       imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
   } : { ...req.body };
 
-  //delete sauceObject._userId;
+  delete sauceObject._userId;
   if (req.file) {
     Sauce.findOne({ _id: req.params.id })
       .then((sauce) => {
