@@ -3,7 +3,6 @@ const fs = require('fs');
 
 exports.createSauce = (req, res, next) => {
   const sauceObject = JSON.parse(req.body.sauce);
-  console.log(req.body.sauce);
   delete sauceObject._id;
   delete sauceObject._userId;
   const sauce = new Sauce({
@@ -80,8 +79,32 @@ exports.getOneSauce = (req, res, next) => {
 exports.postLike = (req, res, next) => {
     const like = req.body.like;
     const userId = req.body.userId;
-  
-    if (like === 0) {
+    Sauce.findOne({ _id: req.params.id })
+    .then((sauce) => {
+      if (like === 0){
+        sauce.usersLiked.filter( userId => userId =! req.body.userId)
+        sauce.usersDisliked.filter( userId => userId =! req.body.userId)
+
+      }else if(like === 1){
+        sauce.usersDisliked.filter( userId => userId =! req.body.userId)
+        if(!sauce.usersLiked.find(userId => userId == req.body.userId)){
+          sauce.usersLiked.push(req.body.userId)
+        }
+      }else if (like === -1){
+        console.log(like);
+        sauce.usersLiked.filter( userId => userId =! req.body.userId)
+        if(!sauce.usersDisliked.find(userId => userId == req.body.userId)){
+          sauce.usersDisliked.push(req.body.userId)
+        }
+      }
+      sauce.likes = sauce.usersLiked.length
+      sauce.dislikes = sauce.usersDisliked.length
+
+      sauce.save()
+    })
+    .then(() => res.status(200).json({ message: 'Like ajouté' }))
+    .catch((error) => res.status(400).json({ error }));
+    /*if (like === 0) {
       Sauce.findOne({ _id: req.params.id }) 
         .then((sauce) => {
           if (sauce.usersLiked.includes(req.body.userId)) {
@@ -136,6 +159,6 @@ exports.postLike = (req, res, next) => {
       )
         .then(() => res.status(200).json({ message: 'Dislike ajouté' }))
         .catch((error) => res.status(400).json({ error }));
-    }
-  };
+    }*/
+};
   
