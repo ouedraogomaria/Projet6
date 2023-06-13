@@ -77,88 +77,33 @@ exports.getOneSauce = (req, res, next) => {
 }
 
 exports.postLike = (req, res, next) => {
-    const like = req.body.like;
-    const userId = req.body.userId;
-    Sauce.findOne({ _id: req.params.id })
-    .then((sauce) => {
-      if (like === 0){
-        sauce.usersLiked.filter( userId => userId =! req.body.userId)
-        sauce.usersDisliked.filter( userId => userId =! req.body.userId)
-
-      }else if(like === 1){
-        sauce.usersDisliked.filter( userId => userId =! req.body.userId)
-        if(!sauce.usersLiked.find(userId => userId == req.body.userId)){
+  const like = req.body.like;
+  const userId = req.body.userId;
+  Sauce.findOne({ _id: req.params.id })
+  .then((sauce) => {
+    if (like === 0){
+      sauce.usersLiked = sauce.usersLiked.filter( userId => userId != req.body.userId);
+      sauce.usersDisliked = sauce.usersDisliked.filter( userId => userId != req.body.userId)
+     
+    }else if(like === 1){
+      sauce.usersDisliked = sauce.usersDisliked.filter( userId => userId != req.body.userId)
+      if(!sauce.usersLiked.find(userId => userId == req.body.userId)){
           sauce.usersLiked.push(req.body.userId)
-        }
-      }else if (like === -1){
-        console.log(like);
-        sauce.usersLiked.filter( userId => userId =! req.body.userId)
-        if(!sauce.usersDisliked.find(userId => userId == req.body.userId)){
-          sauce.usersDisliked.push(req.body.userId)
-        }
       }
-      sauce.likes = sauce.usersLiked.length
-      sauce.dislikes = sauce.usersDisliked.length
 
-      sauce.save()
-    })
-    .then(() => res.status(200).json({ message: 'Like ajouté' }))
-    .catch((error) => res.status(400).json({ error }));
-    /*if (like === 0) {
-      Sauce.findOne({ _id: req.params.id }) 
-        .then((sauce) => {
-          if (sauce.usersLiked.includes(req.body.userId)) {
-            sauce.updateOne(
-              { _id: req.params.id },
-              {
-                $pull: { usersLiked: req.body.userId },
-                $inc: { likes: -1 },
-                _id: req.params.id,
-              }
-            )
-              .then(() => res.status(200).json({ message: 'Like retiré' }))
-              .catch((error) => res.status(400).json({ error }));
-          }
-          if (sauce.usersDisliked.includes(req.body.userId)) {
-            sauce.updateOne(
-              { _id: req.params.id },
-              {
-                $pull: { usersDisliked: req.body.userId }, 
-                $inc: { dislikes: -1 }, 
-                _id: req.params.id,
-              }
-            )
-              .then(() => res.status(200).json({ message: 'Dislike retiré' }))
-              .catch((error) => res.status(400).json({ error }));
-          } else {
-            () => res.status(200).json({ message: 'Merci de nous donner votre avis' });
-          }
-        })
-        .catch((error) => res.status(404).json({ error }));
+    }else if (like === -1){
+      sauce.usersLiked = sauce.usersLiked.filter( userId => userId =! req.body.userId)
+      if(!sauce.usersDisliked.find(userId => userId == req.body.userId)){
+          sauce.usersDisliked.push(req.body.userId)
+      }
     }
+    sauce.likes = sauce.usersLiked.length
+    sauce.dislikes = sauce.usersDisliked.length
+
+    sauce.save()
+  })
+  .then(() => res.status(200).json({ message: 'Like ajouté' }))
+  .catch((error) => res.status(400).json({ error }));
   
-    if (like === 1) {
-      Sauce.updateOne(
-        { _id: req.params.id },
-        {
-          $push: { usersLiked: userId }, 
-          $inc: { likes: 1 }, 
-        }
-      )
-        .then(() => res.status(200).json({ message: 'Like ajouté' }))
-        .catch((error) => res.status(400).json({ error }));
-    }
-  
-    if (like === -1) {
-      Sauce.updateOne(
-        { _id: req.params.id },
-        {
-          $push: { usersDisliked: userId },
-          $inc: { dislikes: 1 },
-        }
-      )
-        .then(() => res.status(200).json({ message: 'Dislike ajouté' }))
-        .catch((error) => res.status(400).json({ error }));
-    }*/
 };
   
