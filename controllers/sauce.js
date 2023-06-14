@@ -14,7 +14,6 @@ exports.createSauce = (req, res, next) => {
   sauce.save()
   .then(() => { res.status(201).json({message: 'Sauce enregistré !'})})
   .catch(error => { res.status(400).json( { error })})
-    console.log('Sauce non enregistré')
 };
 
 exports.modifySauce = (req, res, next) => {
