@@ -91,7 +91,7 @@ exports.postLike = (req, res, next) => {
       }
 
     }else if (like === -1){
-      sauce.usersLiked = sauce.usersLiked.filter( userId => userId =! req.body.userId)
+      sauce.usersLiked = sauce.usersLiked.filter( userId => userId != req.body.userId)
       if(!sauce.usersDisliked.find(userId => userId == req.body.userId)){
           sauce.usersDisliked.push(req.body.userId)
       }
